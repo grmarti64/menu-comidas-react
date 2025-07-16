@@ -2,25 +2,38 @@ import React, { useState } from 'react';
 
 function App() {
   const [pantalla, setPantalla] = useState('menu');
-  const productosSeleccionados = 0; // Este valor debería ser dinámico si se implementa la lógica de selección de productos
+  // Estado: cantidad seleccionada de cada producto (por nombre)
+  const [seleccionados, setSeleccionados] = useState({});
 
   const comidas = [
     { nombre: "Napolita", descripcion: "Milanesa de ternera con salsa de tomate y queso muzzarela", precio: 11000 },
     { nombre: "Milanesa común", descripcion: "Clásica milanesa de ternera", precio: 9500 },
-    { nombre: "Tostado común", descripcion: "Tradcional con manteca", precio: 8000 },
-    { nombre: "Carlitos especial", descripcion: "Jamon, queso y aceitunas", precio: 14000 },
-    { nombre: "Papas fritas", descripcion: "Porción de papas fritas", precio: 6000 },
-    { nombre: "Papas con cheddar y panceta", descripcion: "Porción de papas con cheddar y panceta", precio: 8000 },
-    //{ nombre: "Papas con huevo y queso", descripcion: "Porción de papas con huevo y queso", precio: 8000 },
-    //{ nombre: "Papas con huevo y panceta", descripcion: "Porción de papas con huevo y panceta", precio: 12000 },
-
-    ];
+  ];
   const bebidas = [
     { nombre: "Fernet", descripcion: "Vaso fernet: fernet branca y gaseosa Coca Cola", precio: 6000 },
     { nombre: "Gin Tonic", descripcion: "Gin La Salvaje, Sprite y rodajas de limón", precio: 5000 },
     { nombre: "Agua mineral", descripcion: "Agua mineral", precio: 4000 },
     { nombre: "Agua gasificada", descripcion: "Agua con gas", precio: 4000 },
   ];
+
+  // Suma todos los productos seleccionados
+  const totalSeleccionados = Object.values(seleccionados).reduce((a, b) => a + b, 0);
+
+  // Función para agregar (sumar uno) un producto
+  const handleAgregar = (nombre) => {
+    setSeleccionados(prev => ({
+      ...prev,
+      [nombre]: (prev[nombre] || 0) + 1
+    }));
+  };
+
+  // Función para restar (botón -)
+  const handleRestar = (nombre) => {
+    setSeleccionados(prev => ({
+      ...prev,
+      [nombre]: Math.max((prev[nombre] || 0) - 1, 0)
+    }));
+  };
 
   const Encabezado = () => (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#eee', height: 50, padding: '0 20px' }}>
@@ -63,68 +76,71 @@ function App() {
           justifyContent: 'center',
           fontWeight: 'bold',
           marginLeft: 10
-        }}>{productosSeleccionados}</span>
+        }}>{totalSeleccionados}</span>
       </div>
     </div>
   );
 
-  // Ahora el botón menos está SIEMPRE, tanto en comidas como en bebidas
-  const ProductoFila = ({ nombre, descripcion, precio }) => (
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: '1fr auto auto auto',
-    alignItems: 'center',
-    gap: 10,
-    borderBottom: '1px solid #f0f0f0',
-    padding: '12px 0'
-  }}>
-    <div>
-      <span style={{ fontWeight: 'bold' }}>{nombre}:</span>
-      <span style={{ marginLeft: 6 }}>{descripcion}</span>
+  // Fila para productos, con + y – en comidas, solo + en bebidas
+  const ProductoFila = ({ nombre, descripcion, precio, esComida }) => (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: esComida ? '1fr auto auto auto auto' : '1fr auto auto auto',
+      alignItems: 'center',
+      gap: 10,
+      borderBottom: '1px solid #f0f0f0',
+      padding: '12px 0'
+    }}>
+      <div>
+        <span style={{ fontWeight: 'bold' }}>{nombre}:</span>
+        <span style={{ marginLeft: 6 }}>{descripcion}</span>
+      </div>
+      <div style={{ fontWeight: 'bold', fontSize: 16, minWidth: 70, textAlign: 'right' }}>
+        ${precio}
+      </div>
+      <span style={{ minWidth: 25, textAlign: 'center', fontSize: 16 }}>
+        {seleccionados[nombre] || 0}
+      </span>
+      <button
+        style={{
+          marginLeft: 4,
+          width: 36,
+          height: 36,
+          borderRadius: '50%',
+          border: 'none',
+          background: '#e5a843',
+          color: '#fff',
+          fontSize: 20,
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          transition: 'background 0.2s'
+        }}
+        onMouseOver={e => e.currentTarget.style.background = '#f3c96c'}
+        onMouseOut={e => e.currentTarget.style.background = '#e5a843'}
+        onClick={() => handleAgregar(nombre)}
+      >+</button>
+      {esComida && (
+        <button
+          style={{
+            marginLeft: 4,
+            width: 36,
+            height: 36,
+            borderRadius: '50%',
+            border: 'none',
+            background: '#e5a843',
+            color: '#fff',
+            fontSize: 20,
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            transition: 'background 0.2s'
+          }}
+          onMouseOver={e => e.currentTarget.style.background = '#f3c96c'}
+          onMouseOut={e => e.currentTarget.style.background = '#e5a843'}
+          onClick={() => handleRestar(nombre)}
+        >–</button>
+      )}
     </div>
-    <div style={{ fontWeight: 'bold', fontSize: 16, minWidth: 70, textAlign: 'right' }}>
-      ${precio}
-    </div>
-    {/* Botón + */}
-    <button
-      style={{
-        marginLeft: 10,
-        width: 36,
-        height: 36,
-        borderRadius: '50%',
-        border: 'none',
-        background: '#e5a843',
-        color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold',
-        cursor: 'pointer',
-        transition: 'background 0.2s'
-      }}
-      onMouseOver={e => e.currentTarget.style.background = '#f3c96c'}
-      onMouseOut={e => e.currentTarget.style.background = '#e5a843'}
-    >+</button>
-    {/* Botón - */}
-    <button
-      style={{
-        marginLeft: 4,
-        width: 36,
-        height: 36,
-        borderRadius: '50%',
-        border: 'none',
-        background: '#e5a843',
-        color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold',
-        cursor: 'pointer',
-        transition: 'background 0.2s'
-      }}
-      onMouseOver={e => e.currentTarget.style.background = '#f3c96c'}
-      onMouseOut={e => e.currentTarget.style.background = '#e5a843'}
-    >–</button>
-  </div>
-);
-
-
+  );
 
   const PantallaMenu = () => (
     <div>
@@ -174,7 +190,7 @@ function App() {
       <h3 style={{ margin: '20px 0 20px 40px', fontWeight: 400 }}>Minutas</h3>
       <div style={{ marginLeft: 40, marginRight: 40 }}>
         {comidas.map((comida, idx) => (
-          <ProductoFila key={idx} {...comida} />
+          <ProductoFila key={idx} {...comida} esComida={true} />
         ))}
       </div>
       <button
@@ -191,7 +207,7 @@ function App() {
       <h1 style={{ margin: '30px 0 10px 40px', fontWeight: 400 }}>Menu de Bebidas</h1>
       <div style={{ marginLeft: 40, marginRight: 40 }}>
         {bebidas.map((bebida, idx) => (
-          <ProductoFila key={idx} {...bebida} />
+          <ProductoFila key={idx} {...bebida} esComida={false} />
         ))}
       </div>
       <button

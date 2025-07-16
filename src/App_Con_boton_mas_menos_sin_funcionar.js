@@ -2,19 +2,13 @@ import React, { useState } from 'react';
 
 function App() {
   const [pantalla, setPantalla] = useState('menu');
-  const productosSeleccionados = 0; // Este valor debería ser dinámico si se implementa la lógica de selección de productos
+  const productosSeleccionados = 1;
 
   const comidas = [
     { nombre: "Napolita", descripcion: "Milanesa de ternera con salsa de tomate y queso muzzarela", precio: 11000 },
     { nombre: "Milanesa común", descripcion: "Clásica milanesa de ternera", precio: 9500 },
-    { nombre: "Tostado común", descripcion: "Tradcional con manteca", precio: 8000 },
-    { nombre: "Carlitos especial", descripcion: "Jamon, queso y aceitunas", precio: 14000 },
-    { nombre: "Papas fritas", descripcion: "Porción de papas fritas", precio: 6000 },
-    { nombre: "Papas con cheddar y panceta", descripcion: "Porción de papas con cheddar y panceta", precio: 8000 },
-    //{ nombre: "Papas con huevo y queso", descripcion: "Porción de papas con huevo y queso", precio: 8000 },
-    //{ nombre: "Papas con huevo y panceta", descripcion: "Porción de papas con huevo y panceta", precio: 12000 },
-
-    ];
+	
+  ];
   const bebidas = [
     { nombre: "Fernet", descripcion: "Vaso fernet: fernet branca y gaseosa Coca Cola", precio: 6000 },
     { nombre: "Gin Tonic", descripcion: "Gin La Salvaje, Sprite y rodajas de limón", precio: 5000 },
@@ -68,103 +62,61 @@ function App() {
     </div>
   );
 
-  // Ahora el botón menos está SIEMPRE, tanto en comidas como en bebidas
-  const ProductoFila = ({ nombre, descripcion, precio }) => (
-  <div style={{
-    display: 'grid',
-    gridTemplateColumns: '1fr auto auto auto',
-    alignItems: 'center',
-    gap: 10,
-    borderBottom: '1px solid #f0f0f0',
-    padding: '12px 0'
-  }}>
-    <div>
-      <span style={{ fontWeight: 'bold' }}>{nombre}:</span>
-      <span style={{ marginLeft: 6 }}>{descripcion}</span>
-    </div>
-    <div style={{ fontWeight: 'bold', fontSize: 16, minWidth: 70, textAlign: 'right' }}>
-      ${precio}
-    </div>
-    {/* Botón + */}
-    <button
-      style={{
-        marginLeft: 10,
-        width: 36,
-        height: 36,
-        borderRadius: '50%',
-        border: 'none',
-        background: '#e5a843',
-        color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold',
-        cursor: 'pointer',
-        transition: 'background 0.2s'
-      }}
-      onMouseOver={e => e.currentTarget.style.background = '#f3c96c'}
-      onMouseOut={e => e.currentTarget.style.background = '#e5a843'}
-    >+</button>
-    {/* Botón - */}
-    <button
-      style={{
-        marginLeft: 4,
-        width: 36,
-        height: 36,
-        borderRadius: '50%',
-        border: 'none',
-        background: '#e5a843',
-        color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold',
-        cursor: 'pointer',
-        transition: 'background 0.2s'
-      }}
-      onMouseOver={e => e.currentTarget.style.background = '#f3c96c'}
-      onMouseOut={e => e.currentTarget.style.background = '#e5a843'}
-    >–</button>
-  </div>
-);
-
-
-
-  const PantallaMenu = () => (
-    <div>
-      <h1 style={{ margin: '30px 0 30px 40px', fontWeight: 400 }}>Menu</h1>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 30, alignItems: 'center', marginTop: 20 }}>
-        <button
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            background: '#e5a843',
-            border: 'none',
-            borderRadius: 24,
-            padding: '20px 40px',
-            minWidth: 300,
-            boxShadow: '0 2px 8px #eee',
-            cursor: 'pointer'
-          }}
-          onClick={() => setPantalla('comidas')}
-        >
-          <span style={{ fontSize: 50, marginRight: 20 }} role="img" aria-label="burger">🍔</span>
-          <span style={{ fontSize: 20, fontWeight: 500 }}>Menu de comidas</span>
-        </button>
-        <button
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            background: '#e5a843',
-            border: 'none',
-            borderRadius: 24,
-            padding: '20px 40px',
-            minWidth: 300,
-            boxShadow: '0 2px 8px #eee',
-            cursor: 'pointer'
-          }}
-          onClick={() => setPantalla('bebidas')}
-        >
-          <span style={{ fontSize: 50, marginRight: 20 }} role="img" aria-label="drink">🍸</span>
-          <span style={{ fontSize: 20, fontWeight: 500 }}>Menu de bebidas</span>
-        </button>
+  // Fila con 3 columnas usando grid, con + y - si es comida
+  const ProductoFila = ({ nombre, descripcion, precio, esComida }) => (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: esComida ? '1fr auto auto auto' : '1fr auto auto',
+      alignItems: 'center',
+      gap: 10,
+      borderBottom: '1px solid #f0f0f0',
+      padding: '12px 0'
+    }}>
+      <div>
+        <span style={{ fontWeight: 'bold' }}>{nombre}:</span>
+        <span style={{ marginLeft: 6 }}>{descripcion}</span>
       </div>
+      <div style={{ fontWeight: 'bold', fontSize: 16, minWidth: 70, textAlign: 'right' }}>
+        ${precio}
+      </div>
+      <button
+        style={{
+          marginLeft: 10,
+          width: 36,
+          height: 36,
+          borderRadius: '50%',
+          border: 'none',
+          background: '#e5a843',
+          color: '#fff',
+          fontSize: 20,
+          fontWeight: 'bold',
+          cursor: 'pointer',
+          transition: 'background 0.2s'
+        }}
+        // Sin funcionalidad aún
+        onMouseOver={e => e.currentTarget.style.background = '#f3c96c'}
+        onMouseOut={e => e.currentTarget.style.background = '#e5a843'}
+      >+</button>
+      {esComida && (
+        <button
+          style={{
+            marginLeft: 4,
+            width: 36,
+            height: 36,
+            borderRadius: '50%',
+            border: 'none',
+            background: '#e5a843',
+            color: '#fff',
+            fontSize: 20,
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            transition: 'background 0.2s'
+          }}
+          // Sin funcionalidad aún
+          onMouseOver={e => e.currentTarget.style.background = '#f3c96c'}
+          onMouseOut={e => e.currentTarget.style.background = '#e5a843'}
+        >–</button>
+      )}
     </div>
   );
 
@@ -174,7 +126,7 @@ function App() {
       <h3 style={{ margin: '20px 0 20px 40px', fontWeight: 400 }}>Minutas</h3>
       <div style={{ marginLeft: 40, marginRight: 40 }}>
         {comidas.map((comida, idx) => (
-          <ProductoFila key={idx} {...comida} />
+          <ProductoFila key={idx} {...comida} esComida={true} />
         ))}
       </div>
       <button
